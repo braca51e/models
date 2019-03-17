@@ -43,7 +43,7 @@ flags.DEFINE_string('set', 'train', 'Convert training set, validation set or '
                     'merged set.')
 flags.DEFINE_string('annotations_dir', 'Annotations',
                     '(Relative) path to annotations directory.')
-#flags.DEFINE_string('year', 'VOC2007', 'Desired challenge year.')
+flags.DEFINE_string('year', 'POT2019', 'Desired challenge year.')
 flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
 flags.DEFINE_string('label_map_path', 'data/pascal_label_map.pbtxt',
                     'Path to label map proto')
@@ -81,7 +81,7 @@ def dict_to_tf_example(data,
   Raises:
     ValueError: if the image pointed to by data['filename'] is not a valid JPEG
   """
-  img_path = os.path.join(data['folder'], image_subdirectory, data['filename'])
+  img_path = os.path.join(FLAGS.year, image_subdirectory, data['filename'])
   full_path = os.path.join(dataset_directory, img_path)
   with tf.gfile.GFile(full_path, 'rb') as fid:
     encoded_jpg = fid.read()
@@ -160,9 +160,9 @@ def main(_):
 
   #for year in years:
   logging.info('Reading from Dataset Custom %s dataset.')
-  examples_path = os.path.join(data_dir, 'ImageSets', 'Main',
+  examples_path = os.path.join(data_dir, FLAGS.year, 'ImageSets', 'Main',
                                FLAGS.set + '.txt')
-  annotations_dir = os.path.join(data_dir, FLAGS.annotations_dir)
+  annotations_dir = os.path.join(data_dir, FLAGS.year, FLAGS.annotations_dir)
   examples_list = dataset_util.read_examples_list(examples_path)
   print("examples_list: ", examples_list)
   print("annotations_dir: ", annotations_dir)
@@ -171,7 +171,7 @@ def main(_):
   for idx, example in enumerate(examples_list):
     if idx % 100 == 0:
       logging.info('On image %d of %d', idx, len(examples_list))
-    path = os.path.join(annotations_dir, example + ' -1')
+    path = os.path.join(annotations_dir, example + '.xml')
     print("path: ", path)
     input("Enter: ")
     with tf.gfile.GFile(path, 'r') as fid:
