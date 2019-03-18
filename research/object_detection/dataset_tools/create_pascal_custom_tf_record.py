@@ -164,16 +164,11 @@ def main(_):
                                FLAGS.set + '.txt')
   annotations_dir = os.path.join(data_dir, FLAGS.year, FLAGS.annotations_dir)
   examples_list = dataset_util.read_examples_list(examples_path)
-  print("examples_list: ", examples_list)
-  print("annotations_dir: ", annotations_dir)
-  print("examples_path: ", examples_path)
 
   for idx, example in enumerate(examples_list):
     if idx % 100 == 0:
       logging.info('On image %d of %d', idx, len(examples_list))
     path = os.path.join(annotations_dir, example + '.xml')
-    print("path: ", path)
-    input("Enter: ")
     with tf.gfile.GFile(path, 'r') as fid:
       xml_str = fid.read()
     xml = etree.fromstring(xml_str)
